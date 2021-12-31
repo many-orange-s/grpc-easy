@@ -6,4 +6,5 @@ const (
 	ConcreteOrderId     = "The order ID you entered is greater than the total order Id."
 	ConcreteSendOrderId = "This order has been sent and cannot be repeated."
 	ConcreteSend        = "send occur err"
+	ConcreteDes         = "There is no order at this address."
 )

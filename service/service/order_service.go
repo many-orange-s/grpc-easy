@@ -104,11 +104,25 @@ func (m *Manage) SureSend(ctx context.Context, su *pb.SureMsg) (*pb.Respond, err
 	}
 
 	o := &pb.ProductMsg{
+		Id:          -1,
 		Price:       total,
 		Description: su.Description,
 		Name:        su.Destination,
 	}
 	m.OrderMap[ord] = append(m.OrderMap[ord], o)
+
+	u := &pb.Order{
+		Id:          ord,
+		Items:       m.OrderMap[m.OderId],
+		Price:       total,
+		Description: su.Description,
+		Destination: su.Destination,
+	}
+	_, ok := m.Parcel[su.Destination]
+	if !ok {
+		m.Parcel[su.Destination] = make([]*pb.Order, 10)
+	}
+	m.Parcel[su.Destination] = append(m.Parcel[su.Destination], u)
 
 	m.OderId++
 	m.OrderMap[m.OderId] = make([]*pb.ProductMsg, 0, 10)
@@ -129,9 +143,11 @@ func (m *Manage) AddOrder(stream pb.Manage_AddOrderServer) error {
 					return errs.ErrInternal("AddOrder.stream.SendAndClose", concrete.ConcreteSend)
 				}
 				break
+			} else {
+				return errs.ErrInternal("AddOrder.stream.Recv", concrete.ConcreteSend)
 			}
 		}
 		m.OrderMap[m.OderId] = append(m.OrderMap[m.OderId], pro)
 	}
-	return nil
+	return errs.OK()
 }
