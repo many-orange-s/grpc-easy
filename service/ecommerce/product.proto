@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package ecommerce;
+
+service Manage{
+  rpc addProduct (ProductMsg) returns (Information) ;
+  rpc getProduct (Information) returns (ProductMsg) ;
+  rpc deleteProduct (Information) returns (Respond);
+  rpc getOrder (OrderID) returns (Order) ;
+  rpc searchOrder (ProductMsg) returns (stream Order) ;
+  rpc deleteOrder (OrderID) returns (Respond) ;
+  rpc sureSend (SureMsg) returns (Respond) ;
+  rpc addOrder (stream ProductMsg) returns (Order) ;
+  rpc showParcel (stream Destination) returns (stream Parcel);
+}
+
+message ProductMsg {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+}
+
+message Information{
+  int64 OrderID = 1 ;
+  int64 ProductID = 2;
+}
+
+message OrderID {
+  int64 value = 1;
+}
+
+message Order {
+  int64 id = 1;
+  repeated ProductMsg items = 2;
+  float price = 3;
+  string description = 4;
+  string destination = 5;
+}
+
+message Respond {
+  bool ok = 1;
+  int64 statue =2;
+}
+
+message Destination {
+  string des = 1;
+}
+
+message Parcel {
+  string des = 1;
+  int64 count = 2;
+  repeated Order orders = 3;
+}
+
+message SureMsg {
+  int64 orderid = 1;
+  string description = 2;
+  string destination = 3;
+}
