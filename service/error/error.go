@@ -47,8 +47,3 @@ func ErrInternal(errs, msg string) error {
 	}
 	return ds.Err()
 }
-
-func OK() error {
-	ok := status.New(codes.OK, "succeed")
-	return ok.Err()
-}
