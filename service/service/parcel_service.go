@@ -21,11 +21,11 @@ func (m *Manage) ShowParcel(stream pb.Manage_ShowParcelServer) error {
 
 		value, ok := m.Parcel[des.GetDes()]
 		if !ok {
-			return errs.ErrInternal("ShowParcel.Des", concrete.ConcreteDes)
+			return errs.ErrNotFind("ShowParcel.Des", concrete.ConcreteDes)
 		}
 		p := &pb.Parcel{
 			Des:    des.GetDes(),
-			Count:  int64(len(m.Parcel)),
+			Count:  int64(len(m.Parcel[des.GetDes()])),
 			Orders: value,
 		}
 		err = stream.Send(p)
@@ -33,5 +33,5 @@ func (m *Manage) ShowParcel(stream pb.Manage_ShowParcelServer) error {
 			return errs.ErrInternal("ShowParcel.stream.send", concrete.ConcreteSend)
 		}
 	}
-	return errs.OK()
+	return nil
 }

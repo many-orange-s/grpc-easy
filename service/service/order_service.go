@@ -53,7 +53,6 @@ func (m *Manage) SearchOrder(pro *pb.ProductMsg, stream pb.Manage_SearchOrderSer
 					o = &pb.Order{
 						Id:    u,
 						Items: temp,
-						Price: temp[len(temp)-1].Price,
 					}
 				} else {
 					o = &pb.Order{
@@ -72,7 +71,7 @@ func (m *Manage) SearchOrder(pro *pb.ProductMsg, stream pb.Manage_SearchOrderSer
 			}
 		}
 	}
-	return errs.OK()
+	return nil
 }
 
 func (m *Manage) DeleteOrder(ctx context.Context, orderid *pb.OrderID) (*pb.Respond, error) {
@@ -120,13 +119,13 @@ func (m *Manage) SureSend(ctx context.Context, su *pb.SureMsg) (*pb.Respond, err
 	}
 	_, ok := m.Parcel[su.Destination]
 	if !ok {
-		m.Parcel[su.Destination] = make([]*pb.Order, 10)
+		m.Parcel[su.Destination] = make([]*pb.Order, 0, 10)
 	}
 	m.Parcel[su.Destination] = append(m.Parcel[su.Destination], u)
 
 	m.OderId++
 	m.OrderMap[m.OderId] = make([]*pb.ProductMsg, 0, 10)
-	return &pb.Respond{Ok: true, Statue: 1}, errs.OK()
+	return &pb.Respond{Ok: true, Statue: 1}, nil
 }
 
 func (m *Manage) AddOrder(stream pb.Manage_AddOrderServer) error {
@@ -149,5 +148,5 @@ func (m *Manage) AddOrder(stream pb.Manage_AddOrderServer) error {
 		}
 		m.OrderMap[m.OderId] = append(m.OrderMap[m.OderId], pro)
 	}
-	return errs.OK()
+	return nil
 }
