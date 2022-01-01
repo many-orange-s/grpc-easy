@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	_ "google.golang.org/grpc/encoding/gzip"
 	"grpc-easy/concrete"
 	pb "grpc-easy/ecommerce"
 	errs "grpc-easy/error"

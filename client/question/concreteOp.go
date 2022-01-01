@@ -4,6 +4,8 @@ import (
 	pb "client/ecommerce"
 	errs "client/err"
 	"context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/encoding/gzip"
 	"log"
 )
 
@@ -16,7 +18,7 @@ func addProduct(ctx context.Context, c pb.ManageClient, pro *pb.ProductMsg) {
 }
 
 func getProduct(ctx context.Context, c pb.ManageClient, in *pb.Information) {
-	proMsg, err := c.GetProduct(ctx, in)
+	proMsg, err := c.GetProduct(ctx, in, grpc.UseCompressor(gzip.Name))
 
 	if err != nil {
 		errs.ErrDetail(err)
@@ -26,7 +28,7 @@ func getProduct(ctx context.Context, c pb.ManageClient, in *pb.Information) {
 }
 
 func deleteProduct(ctx context.Context, c pb.ManageClient, in *pb.Information) {
-	re, err := c.DeleteProduct(ctx, in)
+	re, err := c.DeleteProduct(ctx, in, grpc.UseCompressor(gzip.Name))
 	if err != nil {
 		errs.ErrDetail(err)
 		return
@@ -35,13 +37,13 @@ func deleteProduct(ctx context.Context, c pb.ManageClient, in *pb.Information) {
 }
 
 func getOrder(ctx context.Context, c pb.ManageClient, ordid *pb.OrderID) {
-	orders, err := c.GetOrder(ctx, ordid)
+	orders, err := c.GetOrder(ctx, ordid, grpc.UseCompressor(gzip.Name))
 	if err != nil {
 		errs.ErrDetail(err)
 		return
 	}
 
-	log.Printf("id :%d , price :%f", orders.Id, orders.Price)
+	log.Printf("id :%d ", orders.Id)
 	for _, item := range orders.Items {
 		log.Println(item)
 	}

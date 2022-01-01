@@ -22,7 +22,8 @@ func main() {
 	defer conn.Close()
 	c := pb.NewManageClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	clientDeadline := time.Now().Add(time.Duration(2 * time.Second))
+	ctx, cancel := context.WithDeadline(context.Background(), clientDeadline)
 	defer cancel()
 
 	question.Operation(ctx, c)

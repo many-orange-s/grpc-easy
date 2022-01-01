@@ -16,6 +16,8 @@ func Operation(ctx context.Context, c pb.ManageClient) {
 		Price:       price,
 	}
 	addProduct(ctx, c, pro)
+	pro.Id = 1
+	addProduct(ctx, c, pro)
 
 	in := &pb.Information{
 		OrderID:   0,
