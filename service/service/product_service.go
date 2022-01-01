@@ -15,12 +15,18 @@ func (m *Manage) init() {
 }
 
 func (m *Manage) AddProduct(ctx context.Context, pro *pb.ProductMsg) (*pb.Information, error) {
+	if m.OrderMap == nil {
+		m.init()
+	}
 	m.OrderMap[m.OderId] = append(m.OrderMap[m.OderId], pro)
 	return &pb.Information{OrderID: m.OderId, ProductID: pro.Id}, nil
 }
 
 func (m *Manage) GetProduct(ctx context.Context, info *pb.Information) (*pb.ProductMsg, error) {
 	orderid := info.GetOrderID()
+	if orderid > m.OderId || (orderid == m.OderId && m.OrderMap[orderid] == nil) {
+		return nil, errs.ErrInvalid("DeleteProduct.ID", concrete.ConcreteOrderId)
+	}
 	proid := info.GetProductID()
 	for _, pro := range m.OrderMap[orderid] {
 		if pro.Id == proid {
