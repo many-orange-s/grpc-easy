@@ -29,4 +29,6 @@ func Operation(ctx context.Context, c pb.ManageClient) {
 
 	id := &pb.OrderID{Value: 0}
 	getOrder(ctx, c, id)
+
+	searchOrder(ctx, c, pro)
 }

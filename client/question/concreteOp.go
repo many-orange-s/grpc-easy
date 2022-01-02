@@ -6,12 +6,14 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding/gzip"
+	"io"
 	"log"
 )
 
 func addProduct(ctx context.Context, c pb.ManageClient, pro *pb.ProductMsg) {
 	r, err := c.AddProduct(ctx, pro)
 	if err != nil {
+		log.Println(err)
 		log.Fatalf("Could not add product")
 	}
 	log.Printf("AddProduct orderid = %v , productid = %v", r.GetOrderID(), r.GetProductID())
@@ -43,8 +45,29 @@ func getOrder(ctx context.Context, c pb.ManageClient, ordid *pb.OrderID) {
 		return
 	}
 
-	log.Printf("id :%d ", orders.Id)
+	log.Printf("getorder id :%d ", orders.Id)
 	for _, item := range orders.Items {
-		log.Println(item)
+		log.Println("every product is  ", item)
+	}
+}
+
+func searchOrder(ctx context.Context, c pb.ManageClient, pro *pb.ProductMsg) {
+	stream, err := c.SearchOrder(ctx, pro)
+	if err != nil {
+		errs.ErrDetail(err)
+		return
+	}
+
+	for {
+		ord, err := stream.Recv()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			errs.ErrDetail(err)
+			return
+		}
+
+		log.Println("searchorder post ", ord)
 	}
 }

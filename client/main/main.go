@@ -10,11 +10,20 @@ import (
 )
 
 const (
-	address = "localhost:50051"
+	address  = "localhost:50051"
+	hostname = "localhost"
+	crtFile  = "D:\\go_project\\grpc-easy\\service\\server.crt"
 )
 
 func main() {
-
+	/*creds, err := credentials.NewClientTLSFromFile(crtFile, hostname)
+	if err != nil {
+		log.Fatalf("failed to load credentials :%v", err)
+	}
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(creds),
+	}
+	*/
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect : %v", err)
