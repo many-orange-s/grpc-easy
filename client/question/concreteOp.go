@@ -71,3 +71,18 @@ func searchOrder(ctx context.Context, c pb.ManageClient, pro *pb.ProductMsg) {
 		log.Println("searchorder post ", ord)
 	}
 }
+
+func addOrder(ctx context.Context, c pb.ManageClient, pros []*pb.ProductMsg) {
+	stream, err := c.AddOrder(ctx)
+	if err != nil {
+		errs.ErrDetail(err)
+		return
+	}
+
+	for _, pro := range pros {
+		_ = stream.Send(pro)
+	}
+
+	ord, err := stream.CloseAndRecv()
+	log.Println(ord)
+}

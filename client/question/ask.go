@@ -25,10 +25,16 @@ func Operation(ctx context.Context, c pb.ManageClient) {
 	}
 	getProduct(ctx, c, in)
 
-	deleteProduct(ctx, c, in)
+	//deleteProduct(ctx, c, in)
 
 	id := &pb.OrderID{Value: 0}
 	getOrder(ctx, c, id)
 
 	searchOrder(ctx, c, pro)
+
+	pro.Id = 0
+	o := []*pb.ProductMsg{
+		pro, pro, pro,
+	}
+	addOrder(ctx, c, o)
 }
