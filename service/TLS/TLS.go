@@ -38,7 +38,8 @@ func CreateOp() []grpc.ServerOption {
 			ClientCAs:    certPool,
 		})),
 		//grpc.UnaryInterceptor(basic.EnsureValidBasic),
-		grpc.UnaryInterceptor(oauth.EnsureValidBasic),
+		grpc.UnaryInterceptor(oauth.EnsureValid),
+		grpc.StreamInterceptor(oauth.EnsureStreamAuth),
 	}
 	return opt
 }
