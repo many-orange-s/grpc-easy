@@ -1,8 +1,7 @@
-package basic
+package oauth
 
 import (
 	"context"
-	"encoding/base64"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"grpc-easy/errs"
@@ -16,7 +15,7 @@ func EnsureValidBasic(ctx context.Context, req interface{}, info *grpc.UnaryServ
 		return nil, errs.ErrMissMetadata
 	}
 
-	if !valid(md["Product"]) {
+	if !valid(md["authorization"]) {
 		return nil, errs.ErrInvalidToken
 	}
 
@@ -31,6 +30,6 @@ func valid(auth []string) bool {
 		return false
 	}
 
-	token := strings.TrimPrefix(auth[0], "Basic ")
-	return token == base64.StdEncoding.EncodeToString([]byte("太阳高高我要起早"))
+	token := strings.TrimPrefix(auth[0], "Bearer ")
+	return token == "太阳高高我要起早"
 }

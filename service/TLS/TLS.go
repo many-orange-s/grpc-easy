@@ -5,7 +5,7 @@ import (
 	"crypto/x509"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"grpc-easy/interceptor/basic"
+	"grpc-easy/interceptor/oauth"
 	"io/ioutil"
 	"log"
 )
@@ -37,7 +37,8 @@ func CreateOp() []grpc.ServerOption {
 			Certificates: []tls.Certificate{cert},
 			ClientCAs:    certPool,
 		})),
-		grpc.UnaryInterceptor(basic.EnsureValidBasic),
+		//grpc.UnaryInterceptor(basic.EnsureValidBasic),
+		grpc.UnaryInterceptor(oauth.EnsureValidBasic),
 	}
 	return opt
 }
