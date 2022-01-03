@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 	_ "google.golang.org/grpc/encoding/gzip"
-	"grpc-easy/concrete"
 	pb "grpc-easy/ecommerce"
-	errs "grpc-easy/error"
+	errs "grpc-easy/errs"
 	"io"
 )
 
@@ -15,7 +14,7 @@ func (m *Manage) GetOrder(ctx context.Context, orid *pb.OrderID) (*pb.Order, err
 	var o *pb.Order
 	orderid := orid.GetValue()
 	if orderid > m.OderId || (orderid == m.OderId && m.OrderMap[orderid] == nil) {
-		return nil, errs.ErrInvalid("GetOrder.ID", concrete.ConcreteOrderId)
+		return nil, errs.ErrInvalid("GetOrder.ID", errs.ConcreteOrderId)
 	}
 	temp := m.OrderMap[orderid]
 
@@ -66,7 +65,7 @@ func (m *Manage) SearchOrder(pro *pb.ProductMsg, stream pb.Manage_SearchOrderSer
 				}
 				err := stream.Send(o)
 				if err != nil {
-					return errs.ErrInternal("SearchOrder.stream.send", concrete.ConcreteSend)
+					return errs.ErrInternal("SearchOrder.stream.send", errs.ConcreteSend)
 				}
 				break
 			}
@@ -78,7 +77,7 @@ func (m *Manage) SearchOrder(pro *pb.ProductMsg, stream pb.Manage_SearchOrderSer
 func (m *Manage) DeleteOrder(ctx context.Context, orderid *pb.OrderID) (*pb.Respond, error) {
 	ord := orderid.GetValue()
 	if ord > m.OderId || (ord == m.OderId && m.OrderMap[ord] == nil) {
-		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("DeleteOrder.ID", concrete.ConcreteOrderId)
+		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("DeleteOrder.ID", errs.ConcreteOrderId)
 	}
 
 	delete(m.OrderMap, orderid.GetValue())
@@ -94,9 +93,9 @@ func (m *Manage) SureSend(ctx context.Context, su *pb.SureMsg) (*pb.Respond, err
 	var total float32 = 0
 	ord := su.Orderid
 	if ord > m.OderId || (ord == m.OderId && m.OrderMap[ord] == nil) {
-		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("SureSend.ID", concrete.ConcreteOrderId)
+		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("SureSend.ID", errs.ConcreteOrderId)
 	} else if ord < m.OderId {
-		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("SureSend.ID", concrete.ConcreteSendOrderId)
+		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("SureSend.ID", errs.ConcreteSendOrderId)
 	}
 
 	for _, pro := range m.OrderMap[ord] {
@@ -140,11 +139,11 @@ func (m *Manage) AddOrder(stream pb.Manage_AddOrderServer) error {
 				}
 				err = stream.SendAndClose(o)
 				if err != nil {
-					return errs.ErrInternal("AddOrder.stream.SendAndClose", concrete.ConcreteSend)
+					return errs.ErrInternal("AddOrder.stream.SendAndClose", errs.ConcreteSend)
 				}
 				break
 			} else {
-				return errs.ErrInternal("AddOrder.stream.Recv", concrete.ConcreteSend)
+				return errs.ErrInternal("AddOrder.stream.Recv", errs.ConcreteSend)
 			}
 		}
 		m.OrderMap[m.OderId] = append(m.OrderMap[m.OderId], pro)

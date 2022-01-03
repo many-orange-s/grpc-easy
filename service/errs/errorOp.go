@@ -35,7 +35,7 @@ func ErrInvalid(errs, msg string) error {
 }
 
 func ErrInternal(errs, msg string) error {
-	errorStatus := status.New(codes.Internal, "Internal error")
+	errorStatus := status.New(codes.Internal, "Internal errs")
 	ds, err := errorStatus.WithDetails(
 		&epb.BadRequest_FieldViolation{
 			Field:       errs,

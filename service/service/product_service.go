@@ -3,9 +3,8 @@ package service
 import (
 	"context"
 	_ "google.golang.org/grpc/encoding/gzip"
-	"grpc-easy/concrete"
 	pb "grpc-easy/ecommerce"
-	errs "grpc-easy/error"
+	errs "grpc-easy/errs"
 )
 
 func (m *Manage) init() {
@@ -26,7 +25,7 @@ func (m *Manage) AddProduct(ctx context.Context, pro *pb.ProductMsg) (*pb.Inform
 func (m *Manage) GetProduct(ctx context.Context, info *pb.Information) (*pb.ProductMsg, error) {
 	orderid := info.GetOrderID()
 	if orderid > m.OderId || (orderid == m.OderId && m.OrderMap[orderid] == nil) {
-		return nil, errs.ErrInvalid("DeleteProduct.ID", concrete.ConcreteOrderId)
+		return nil, errs.ErrInvalid("DeleteProduct.ID", errs.ConcreteOrderId)
 	}
 	proid := info.GetProductID()
 	for _, pro := range m.OrderMap[orderid] {
@@ -34,7 +33,7 @@ func (m *Manage) GetProduct(ctx context.Context, info *pb.Information) (*pb.Prod
 			return pro, nil
 		}
 	}
-	return nil, errs.ErrNotFind("GetProduct.ID", concrete.ConcreteProductId)
+	return nil, errs.ErrNotFind("GetProduct.ID", errs.ConcreteProductId)
 }
 
 func (m *Manage) DeleteProduct(ctx context.Context, info *pb.Information) (*pb.Respond, error) {
@@ -42,7 +41,7 @@ func (m *Manage) DeleteProduct(ctx context.Context, info *pb.Information) (*pb.R
 
 	orderid := info.GetOrderID()
 	if orderid > m.OderId || (orderid == m.OderId && m.OrderMap[orderid] == nil) {
-		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("DeleteProduct.ID", concrete.ConcreteOrderId)
+		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrInvalid("DeleteProduct.ID", errs.ConcreteOrderId)
 	}
 	proid := info.GetProductID()
 	temp := m.OrderMap[orderid]
@@ -56,7 +55,7 @@ func (m *Manage) DeleteProduct(ctx context.Context, info *pb.Information) (*pb.R
 		}
 	}
 	if i == lenth {
-		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrNotFind("DeleteProduct.ID", concrete.ConcreteProductId)
+		return &pb.Respond{Ok: false, Statue: 0}, errs.ErrNotFind("DeleteProduct.ID", errs.ConcreteProductId)
 	}
 
 	// Status 1表示删除的是当前没有发出去的订单的商品  0表示删除的是已经发出订单的商品

@@ -1,4 +1,4 @@
-package concrete
+package errs
 
 //  具体的出问题的错误字符串
 const (

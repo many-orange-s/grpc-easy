@@ -3,9 +3,8 @@ package service
 import (
 	"errors"
 	_ "google.golang.org/grpc/encoding/gzip"
-	"grpc-easy/concrete"
 	pb "grpc-easy/ecommerce"
-	errs "grpc-easy/error"
+	errs "grpc-easy/errs"
 	"io"
 )
 
@@ -16,13 +15,13 @@ func (m *Manage) ShowParcel(stream pb.Manage_ShowParcelServer) error {
 			if errors.Is(err, io.EOF) {
 				break
 			} else {
-				return errs.ErrInternal("ShowParcel.stream.Recv", concrete.ConcreteSend)
+				return errs.ErrInternal("ShowParcel.stream.Recv", errs.ConcreteSend)
 			}
 		}
 
 		value, ok := m.Parcel[des.GetDes()]
 		if !ok {
-			return errs.ErrNotFind("ShowParcel.Des", concrete.ConcreteDes)
+			return errs.ErrNotFind("ShowParcel.Des", errs.ConcreteDes)
 		}
 		p := &pb.Parcel{
 			Des:    des.GetDes(),
@@ -31,7 +30,7 @@ func (m *Manage) ShowParcel(stream pb.Manage_ShowParcelServer) error {
 		}
 		err = stream.Send(p)
 		if err != nil {
-			return errs.ErrInternal("ShowParcel.stream.send", concrete.ConcreteSend)
+			return errs.ErrInternal("ShowParcel.stream.send", errs.ConcreteSend)
 		}
 	}
 	return nil
