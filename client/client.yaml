@@ -1,0 +1,6 @@
+address: localhost:50051
+hostname: many.orange
+crtFile: D:\\go_project\\keys\\client.crt
+keyFile: D:\\go_project\\keys\\client.key
+caFile: D:\\go_project\\keys\\ca.crt
+secrete: 太阳高高我要起早

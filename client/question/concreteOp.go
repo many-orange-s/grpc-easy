@@ -84,5 +84,5 @@ func addOrder(ctx context.Context, c pb.ManageClient, pros []*pb.ProductMsg) {
 	}
 
 	ord, err := stream.CloseAndRecv()
-	log.Println(ord)
+	log.Println("addorder order ", ord)
 }

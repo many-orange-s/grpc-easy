@@ -2,6 +2,7 @@ package main
 
 import (
 	"client/TLS"
+	"client/config"
 	pb "client/ecommerce"
 	"client/question"
 	"context"
@@ -10,13 +11,9 @@ import (
 	"time"
 )
 
-const (
-	address = "localhost:50051"
-)
-
 func main() {
 	opts := TLS.CreateOp()
-	conn, err := grpc.Dial(address, opts...)
+	conn, err := grpc.Dial(config.Con.Address, opts...)
 	if err != nil {
 		log.Fatalf("did not connect : %v", err)
 	}

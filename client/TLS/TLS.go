@@ -1,6 +1,7 @@
 package TLS
 
 import (
+	"client/config"
 	"client/mytoken/oAuth"
 	"crypto/tls"
 	"crypto/x509"
@@ -11,21 +12,13 @@ import (
 	"log"
 )
 
-const (
-	hostname = "many.orange"
-	crtFile  = "D:\\go_project\\keys\\client.crt"
-	keyFile  = "D:\\go_project\\keys\\client.key"
-	caFile   = "D:\\go_project\\keys\\ca.crt"
-	Secrete  = "太阳高高我要起早"
-)
-
 func CreateOp() []grpc.DialOption {
-	cert, err := tls.LoadX509KeyPair(crtFile, keyFile)
+	cert, err := tls.LoadX509KeyPair(config.Con.CrtFile, config.Con.KeyFile)
 	if err != nil {
 		log.Fatalf("Could not load client keu pair : %s", err)
 	}
 	certPool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile(caFile)
+	ca, err := ioutil.ReadFile(config.Con.CaFile)
 	if err != nil {
 		log.Fatalf("could not read ca cer %s", err)
 	}
@@ -33,12 +26,12 @@ func CreateOp() []grpc.DialOption {
 		log.Fatalf("faild to append ca certs")
 	}
 
-	//auth := auth2.BasicAuth{Secret: Secrete}
+	//auth := auth2.BasicAuth{Secret: config.Con.secret}
 	auth := oauth.NewOauthAccess(oAuth.FetchToken())
 
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-			ServerName:   hostname,
+			ServerName:   config.Con.Hostname,
 			Certificates: []tls.Certificate{cert},
 			RootCAs:      certPool,
 		})),
