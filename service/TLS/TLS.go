@@ -5,24 +5,19 @@ import (
 	"crypto/x509"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"grpc-easy/config"
 	"grpc-easy/interceptor/oauth"
 	"io/ioutil"
 	"log"
 )
 
-const (
-	crtFile = "D:\\go_project\\keys\\server.crt"
-	keyFile = "D:\\go_project\\keys\\server.key"
-	caFile  = "D:\\go_project\\keys\\ca.crt"
-)
-
 func CreateOp() []grpc.ServerOption {
-	cert, err := tls.LoadX509KeyPair(crtFile, keyFile)
+	cert, err := tls.LoadX509KeyPair(config.Con.CarFile, config.Con.KeyFile)
 	if err != nil {
 		log.Fatalf("failed to load key part : %s", err)
 	}
 	certPool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile(caFile)
+	ca, err := ioutil.ReadFile(config.Con.CaFile)
 	if err != nil {
 		log.Fatalf("could not read ca certificate :%s", err)
 	}

@@ -1,0 +1,4 @@
+port: :50051
+carFile: D:\\go_project\\keys\\server.crt
+keyFile: D:\\go_project\\keys\\server.key
+caFile:  D:\\go_project\\keys\\ca.crt
